@@ -9,6 +9,7 @@ yum remove firewalld -y
 yum install epel-release -y
 yum -y update
 yum -y install python-pip
+pip install boto3
 
 # install net-tools
 yum install net-tools ntp -y
