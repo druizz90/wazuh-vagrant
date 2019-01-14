@@ -1,0 +1,15 @@
+Vagrant.configure("2") do |config|
+
+	config.vm.define "manager-pre-release" do |manager|
+  		manager.vm.box = "centos/7"
+  		manager.vm.provision :shell, path: "manager-pre-release.sh"
+  		manager.vm.network :private_network, ip: "172.16.1.5"
+
+			manager.vm.hostname = "manager-pre-release"
+			manager.vm.provider "libvirt" do |pmv|
+				pmv.memory = 1024
+				pmv.cpus   = 2
+			end
+	end
+
+end
