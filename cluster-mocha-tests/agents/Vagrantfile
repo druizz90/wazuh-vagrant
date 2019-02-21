@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+master_ip = "172.19.0.100"
+workers_net = "172.19.0.10" # 172.17.0.10x
+agents_net = "172.19.0.20"  # 172.17.0.20x
+n_agents = 2 
+box = "centos/7"
+
+Vagrant.configure("2") do |config|
+    # Outdate agent
+    config.vm.define "agent-outdated" do |outdated|
+        outdated.vm.box = "#{box}"
+        outdated.vm.provision :shell, path: "install_agent.sh", args: "#{master_ip} #{workers_net}1 agent-outdated stable"
+        outdated.vm.network :private_network, ip: "#{agents_net}9"
+        outdated.vm.provider "libvirt" do |pmv|
+            pmv.memory = 256
+            pmv.cpus   = 1
+        end
+        outdated.vm.hostname = "agent-outdated"
+    end
+    # Agents
+    (1..n_agents).each do |i|
+        config.vm.define "agent-#{i}" do |agent|
+            agent.vm.box = "#{box}"
+            agent.vm.provision :shell, path: "install_agent.sh", args: "#{master_ip} #{workers_net}1 agent-#{i} pre-release"
+            agent.vm.network :private_network, ip: "#{agents_net}#{i}"
+            agent.vm.provider "libvirt" do |pmv|
+                pmv.memory = 256
+                pmv.cpus   = 1
+            end
+            agent.vm.hostname = "agent-#{i}"
+        end
+    end
+end
