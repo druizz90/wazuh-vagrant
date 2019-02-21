@@ -5,12 +5,6 @@
 # remove firewalld
 yum remove firewalld -y
 
-# install pip and boto3 (for AWS wodle)
-yum install epel-release -y
-yum -y update
-yum -y install python-pip
-pip install boto3
-
 # install net-tools
 yum install net-tools ntp -y
 
