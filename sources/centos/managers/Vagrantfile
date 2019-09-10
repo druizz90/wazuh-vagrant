@@ -1,0 +1,37 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+master_ip = "172.19.0.100"
+workers_net = "172.19.0.10" # 172.17.0.10x
+agents_net = "172.19.0.20"  # 172.17.0.20x
+wazuh_branch="3.11"
+n_workers = 1
+box = "centos/7"
+vm_provider = "virtualbox"
+
+Vagrant.configure("2") do |config|
+    # Manager master
+    config.vm.define "master" do |node|
+        node.vm.box = "#{box}"
+        node.vm.provision :shell, path: "./scripts/install_manager.sh", args: "#{master_ip} #{master_ip} master master #{wazuh_branch}"
+        node.vm.network :private_network, ip: "#{master_ip}"
+        node.vm.provider "#{vm_provider}" do |pmv|
+          pmv.memory = 512
+          pmv.cpus   = 1
+      end
+      node.vm.hostname = "wazuh-master"
+    end
+    # Manager worker
+    (1..n_workers).each do |i|
+        config.vm.define "worker-#{i}" do |node|
+            node.vm.box = "#{box}"
+            node.vm.provision :shell, path: "./scripts/install_manager.sh", args: "#{master_ip} #{workers_net}#{i} worker worker-#{i} #{wazuh_branch}"
+            node.vm.network :private_network, ip: "#{workers_net}#{i}"
+            node.vm.provider "#{vm_provider}" do |pmv|
+              pmv.memory = 512
+              pmv.cpus   = 1
+          end
+          node.vm.hostname = "wazuh-worker-#{i}"
+        end
+    end
+end
