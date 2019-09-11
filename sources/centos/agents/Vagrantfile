@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
             agent.vm.box = "#{box}"
             agent.vm.provision :shell, path: "./scripts/install_agent.sh", args: "#{master_ip} #{master_ip} agent-master-#{i}"
             agent.vm.network :private_network, ip: "#{agents_net}#{i}"
-            config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+            config.vm.synced_folder "./shared", "/shared"
             agent.vm.provider "#{vm_provider}" do |pmv|
                 pmv.memory = 256
                 pmv.cpus   = 1
@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
             agent.vm.box = "#{box}"
             agent.vm.provision :shell, path: "./scripts/install_agent.sh", args: "#{master_ip} #{workers_net}#{1} agent-worker-#{i}"
             agent.vm.network :private_network, ip: "#{agents_net}#{i+n_agents_master}"
-            config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+            config.vm.synced_folder "./shared", "/shared"
             agent.vm.provider "#{vm_provider}" do |pmv|
                 pmv.memory = 256
                 pmv.cpus   = 1

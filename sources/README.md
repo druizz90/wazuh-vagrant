@@ -1,0 +1,3 @@
+# Instructions
+
+These `Vagrant` environments work with `virtualbox` provider. Please, install both from their official websites (https://www.vagrantup.com/downloads.html and https://www.virtualbox.org/wiki/Downloads) to avoid errors. It is necessary to install `vagrant-vbguest` plugin for sharing directories with the virtual machines. Use `vagrant plugin install vagrant-vbguest` command for doing it.
