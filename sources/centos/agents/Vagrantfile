@@ -1,0 +1,39 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+master_ip = "172.19.0.100"
+workers_net = "172.19.0.10" # 172.17.0.10x
+agents_net = "172.19.0.20"  # 172.17.0.20x
+n_agents_master = 1
+n_agents_worker = 1
+box = "centos/7"
+vm_provider = "virtualbox"
+
+Vagrant.configure("2") do |config|
+    # Agents reporting in master
+    (1..n_agents_master).each do |i|
+        config.vm.define "agent-master-#{i}" do |agent|
+            agent.vm.box = "#{box}"
+            agent.vm.provision :shell, path: "./scripts/install_agent.sh", args: "#{master_ip} #{master_ip} agent-master-#{i}"
+            agent.vm.network :private_network, ip: "#{agents_net}#{i}"
+            agent.vm.provider "#{vm_provider}" do |pmv|
+                pmv.memory = 256
+                pmv.cpus   = 1
+            end
+            agent.vm.hostname = "agent-master-#{i}"
+        end
+    end
+    # Agents reporting in worker 1
+    (1..n_agents_worker).each do |i|
+        config.vm.define "agent-worker-#{i}" do |agent|
+            agent.vm.box = "#{box}"
+            agent.vm.provision :shell, path: "./scripts/install_agent.sh", args: "#{master_ip} #{workers_net}#{1} agent-worker-#{i}"
+            agent.vm.network :private_network, ip: "#{agents_net}#{i+n_agents_master}"
+            agent.vm.provider "#{vm_provider}" do |pmv|
+                pmv.memory = 256
+                pmv.cpus   = 1
+            end
+            agent.vm.hostname = "agent-worker-#{i}"
+        end
+    end
+end
