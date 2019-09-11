@@ -13,11 +13,14 @@ wazuh_path="/var/ossec"
 # install dependencies
 yum install make gcc policycoreutils-python automake autoconf libtool epel-release git which sudo wget -y
 
+# install development dependencies for jq library
+yum groupinstall "Development Tools"
+
 # install Python 3
-yum install python36 python36-pip -y
+yum install python36 python36-pip python36-devel -y
 
 # install Python libraries
-pip3 install pytest freezegun tavern
+pip3 install pytest freezegun jq
 
 # install Wazuh
 cd / && git clone https://github.com/wazuh/wazuh && cd /wazuh && git checkout ${wazuh_branch} && cd /

@@ -23,11 +23,15 @@ EOF
 # install epel-release repository
 yum install epel-release -y
 
+# install development dependencies for jq library
+yum groupinstall "Development Tools"
+yum install autoconf automake libtool python -y
+
 # install Python 3
-yum install python36 python36-pip -y
+yum install python36 python36-pip python36-devel -y
 
 # install Python libraries
-pip3 install pytest freezegun tavern
+pip3 install pytest freezegun jq
 
 # install Wazuh agent
 yum install wazuh-agent -y
