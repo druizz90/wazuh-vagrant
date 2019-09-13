@@ -45,8 +45,8 @@ if [ "X$node_type" != "Xmaster" ]; then
     sed -i "s:<node_type>master</node_type>:<node_type>worker</node_type>:g" $wazuh_path/etc/ossec.conf
 fi
 
-# enable syscheck DB
-echo 'wazuh_database.sync_syscheck=1' >> $wazuh_path/etc/local_internal_options.conf
+# enable debug 2
+echo 'syscheck.debug=2' >> $wazuh_path/etc/local_internal_options.conf
 
 # restart Wazuh
 $wazuh_path/bin/ossec-control restart

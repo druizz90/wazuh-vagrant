@@ -4,7 +4,7 @@
 master_ip = "172.19.0.100"
 workers_net = "172.19.0.10" # 172.17.0.10x
 agents_net = "172.19.0.20"  # 172.17.0.20x
-wazuh_branch="3.11"
+wazuh_branch="fix-syscheck-integritydb"
 n_workers = 1
 box = "centos/7"
 vm_provider = "virtualbox"
