@@ -20,6 +20,10 @@ baseurl=https://packages.wazuh.com/3.x/yum/
 protect=1
 EOF
 
+# disable firewall (only for 'generic/centos7' box, remove when official image will be used)
+systemctl stop firewalld
+systemctl disable firewalld
+
 # install epel-release repository
 yum install epel-release -y
 
@@ -31,7 +35,7 @@ yum install autoconf automake libtool python -y
 yum install python36 python36-pip python36-devel -y
 
 # install Python libraries
-pip3 install pytest freezegun jq
+pip3 install pytest freezegun jq jsonschema pyyaml
 
 # install Wazuh agent
 yum install wazuh-agent -y

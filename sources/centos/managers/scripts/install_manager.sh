@@ -7,6 +7,10 @@ node_type=$3
 node_name=$4
 wazuh_branch=$5
 
+# disable firewall (only for 'generic/centos7' box, remove when official image will be used)
+systemctl stop firewalld
+systemctl disable firewalld
+
 # set Wazuh path
 wazuh_path="/var/ossec"
 
@@ -20,7 +24,7 @@ yum groupinstall "Development Tools"
 yum install python36 python36-pip python36-devel -y
 
 # install Python libraries
-pip3 install pytest freezegun jq
+pip3 install pytest freezegun jq jsonschema pyyaml
 
 # install Wazuh
 cd / && git clone https://github.com/wazuh/wazuh && cd /wazuh && git checkout ${wazuh_branch} && cd /
@@ -47,6 +51,9 @@ fi
 
 # enable debug 2
 echo 'syscheck.debug=2' >> $wazuh_path/etc/local_internal_options.conf
+
+# disable log rotation
+echo 'monitord.rotate_log=0' >> $wazuh_path/etc/local_internal_options.conf
 
 # restart Wazuh
 $wazuh_path/bin/ossec-control restart

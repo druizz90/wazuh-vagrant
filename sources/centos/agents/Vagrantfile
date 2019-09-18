@@ -6,7 +6,7 @@ workers_net = "172.19.0.10" # 172.17.0.10x
 agents_net = "172.19.0.20"  # 172.17.0.20x
 n_agents_master = 1
 n_agents_worker = 1
-box = "centos/7"
+box = "generic/centos7"
 vm_provider = "virtualbox"
 
 Vagrant.configure("2") do |config|
@@ -16,10 +16,11 @@ Vagrant.configure("2") do |config|
             agent.vm.box = "#{box}"
             agent.vm.provision :shell, path: "./scripts/install_agent.sh", args: "#{master_ip} #{master_ip} agent-master-#{i}"
             agent.vm.network :private_network, ip: "#{agents_net}#{i}"
-            config.vm.synced_folder "./shared", "/shared"
+            config.vm.synced_folder "./", "/vagrant"
             agent.vm.provider "#{vm_provider}" do |pmv|
                 pmv.memory = 256
                 pmv.cpus   = 1
+                pmv.customize ["guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/ — timesync-set-threshold", 10000]
             end
             agent.vm.hostname = "agent-master-#{i}"
         end
@@ -30,10 +31,11 @@ Vagrant.configure("2") do |config|
             agent.vm.box = "#{box}"
             agent.vm.provision :shell, path: "./scripts/install_agent.sh", args: "#{master_ip} #{workers_net}#{1} agent-worker-#{i}"
             agent.vm.network :private_network, ip: "#{agents_net}#{i+n_agents_master}"
-            config.vm.synced_folder "./shared", "/shared"
+            config.vm.synced_folder "./", "/vagrant"
             agent.vm.provider "#{vm_provider}" do |pmv|
                 pmv.memory = 256
                 pmv.cpus   = 1
+                pmv.customize ["guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/ — timesync-set-threshold", 10000]
             end
             agent.vm.hostname = "agent-worker-#{i}"
         end
